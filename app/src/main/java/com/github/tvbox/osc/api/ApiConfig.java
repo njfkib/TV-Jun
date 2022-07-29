@@ -80,7 +80,7 @@ public class ApiConfig {
     }
 
     public void loadConfig(boolean useCache, LoadConfigCallback callback, Activity activity) {
-        String apiUrl = Hawk.get(HawkConfig.API_URL, "https://888hd.tk/api.php?peizhi=02");
+        String apiUrl = Hawk.get(HawkConfig.API_URL, "http://888hd.tk/api.php?peizhi=02");
         if (apiUrl.isEmpty()) {
             callback.error("-1");
             return;
