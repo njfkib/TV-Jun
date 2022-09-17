@@ -39,6 +39,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import com.github.catvod.crawler.SpiderNull;
+import com.undcover.freedom.pyramid.PythonLoader;
 
 /**
  * @author pj567
@@ -228,6 +230,9 @@ public class ApiConfig {
     }
 
     private void parseJson(String apiUrl, String jsonStr) {
+        //pyramid-add-start
+	PythonLoader.getInstance().setConfig(jsonStr);
+        //pyramid-add-end
         JsonObject infoJson = new Gson().fromJson(jsonStr, JsonObject.class);
         // spider
         spider = DefaultConfig.safeJsonString(infoJson, "spider", "");
@@ -408,10 +413,36 @@ public class ApiConfig {
     }
 
     public Spider getCSP(SourceBean sourceBean) {
+        //pyramid-add-start
+        if (sourceBean.getApi().startsWith("py_")) {
+            try {
+                return PythonLoader.getInstance().getSpider(sourceBean.getKey(), sourceBean.getExt());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new SpiderNull();
+            }
+        }
+        //pyramid-add-end
         return jarLoader.getSpider(sourceBean.getKey(), sourceBean.getApi(), sourceBean.getExt(), sourceBean.getJar());
     }
 
     public Object[] proxyLocal(Map param) {
+        //pyramid-add-start
+        try {
+            if(param.containsKey("api")){
+                String doStr = param.get("do").toString();
+                if(doStr.equals("ck"))
+                    return PythonLoader.getInstance().proxyLocal("","",param);
+                SourceBean sourceBean = ApiConfig.get().getSource(doStr);
+                return PythonLoader.getInstance().proxyLocal(sourceBean.getKey(),sourceBean.getExt(),param);
+            }else{
+                String doStr = param.get("do").toString();
+                if(doStr.equals("live")) return PythonLoader.getInstance().proxyLocal("","",param);            
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //pyramid-add-end
         return jarLoader.proxyInvoke(param);
     }
 
