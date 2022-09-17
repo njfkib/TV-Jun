@@ -15,6 +15,7 @@ import com.orhanobut.hawk.Hawk;
 import me.jessyan.autosize.AutoSize;
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.unit.Subunits;
+import com.undcover.freedom.pyramid.PythonLoader;
 
 /**
  * @author pj567
@@ -44,6 +45,9 @@ public class App extends MultiDexApplication {
                 .setSupportSP(false)
                 .setSupportSubunits(Subunits.MM);
         PlayerHelper.init();
+    //pyramid-add-start
+	PythonLoader.getInstance().setApplication(this);
+    //pyramid-add-end
     }
 
     private void initParams() {
